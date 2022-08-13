@@ -80,7 +80,7 @@
 					</div>
 					<div class="col-lg-8">
 						<div class="form-group ">
-							<label for="address" class="mb-2 w-200">Địa chỉ: </label> <strong>${sessionScope.auth.address }n</strong>
+							<label for="address" class="mb-2 w-200">Địa chỉ: </label> <strong>${sessionScope.auth.address }</strong>
 						</div>
 						<div class="form-group ">
 							<label for="note" class="mb-2 w-200">Ghi chú: </label> <strong>${order.note }</strong>

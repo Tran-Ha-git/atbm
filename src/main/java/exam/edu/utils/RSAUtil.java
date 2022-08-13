@@ -104,6 +104,10 @@ public class RSAUtil {
 
 	public static String decryptByPublicKey(String data, String base64PublicKey) throws IllegalBlockSizeException,
 			InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+		int l= data.getBytes().length;
+		if(l!= 172) {
+			return "error";
+		}
 		return decryptByPublicKey(Base64.getDecoder().decode(data.getBytes()), getPublicKey(base64PublicKey));
 	}
 //    public static void main(String[] args) throws IllegalBlockSizeException, InvalidKeyException, NoSuchPaddingException, BadPaddingException {

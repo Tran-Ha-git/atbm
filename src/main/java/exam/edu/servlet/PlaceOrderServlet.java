@@ -23,20 +23,22 @@ import exam.edu.model.CartItem;
 import exam.edu.model.Order;
 import exam.edu.model.OrderDetail;
 import exam.edu.model.User;
+import exam.edu.utils.SHA256Hashing;
 
 @WebServlet("/place-order")
 public class PlaceOrderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private String msgCheckout = null;
 	private Boolean msgStatus = null;
-	private boolean isVerifiedUser = false;
+	//private boolean isVerifiedUser = false;
+	private boolean isVerifiedUser = true;
 	private boolean isVerifiedOrder = false;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
-
+			
 			String fullname = (request.getParameter("fullname") != null ? request.getParameter("fullname") : null);
 			String address = (request.getParameter("address") != null ? request.getParameter("address") : null);
 			String phone = (request.getParameter("phone") != null ? request.getParameter("phone") : null);
@@ -53,13 +55,15 @@ public class PlaceOrderServlet extends HttpServlet {
 			Integer shipCost = (Integer) session.getAttribute("shipCost");
 			Integer total = (Integer) session.getAttribute("total");
 			User auth = (User) request.getSession().getAttribute("auth");
-			isVerifiedUser = (boolean) (session.getAttribute("isVerifiedUser") != null
-					? session.getAttribute("isVerifiedUser")
-					: false);
+//			isVerifiedUser = (boolean) (session.getAttribute("isVerifiedUser") != null
+//					? session.getAttribute("isVerifiedUser")
+//					: false);
+			isVerifiedUser= true;
 			isVerifiedOrder = (boolean) (session.getAttribute("isVerifiedOrder") != null
 					? session.getAttribute("isVerifiedOrder")
 					: false);
-			if (!isVerifiedUser) {
+//			if (!isVerifiedUser) {
+			if (isVerifiedUser&&!isVerifiedOrder) {
 				session.setAttribute("fullname", fullname);
 				session.setAttribute("address", address);
 				session.setAttribute("phone", phone);
@@ -75,6 +79,14 @@ public class PlaceOrderServlet extends HttpServlet {
 					response.sendRedirect("/cart");
 					return;
 				} else {
+					
+					UserDao userDao = new UserDao(DbCon.getConnection());
+					if(userDao.getPublicKey(auth.getId())==null) {
+						handleError(request, response, "<br>Bạn chưa tạo khóa!<br> Vui lòng kích hoạt một khóa trước khi đặt hàng. <button type=\"button\" onclick=\"location.href='/key'\" class=\"btn btn-primary\">Tạo khóa</button>", "/checkout");
+						
+						return;
+					}
+					
 					fullname = (String) request.getSession().getAttribute("fullname");
 					address = (String) request.getSession().getAttribute("address");
 					phone = (String) request.getSession().getAttribute("phone");
@@ -85,7 +97,7 @@ public class PlaceOrderServlet extends HttpServlet {
 					} else {
 						/* bắt lặp */
 						Order existedOrder = (Order) request.getSession().getAttribute("order");
-						if (existedOrder == null || existedOrder.getId() == null) {
+						if (existedOrder == null || existedOrder.getId() == null ) {
 
 							List<CartItem> products = productDao.getCartProducts(sessionCart);
 							Order order = new Order();
@@ -113,7 +125,8 @@ public class PlaceOrderServlet extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
 			// xác nhận người dùng
-			if (isVerifiedUser) {
+			//if (isVerifiedUser) {
+			if (isVerifiedUser&&!isVerifiedOrder) {
 				User auth = (User) request.getSession().getAttribute("auth");
 				String fullname = (String) request.getSession().getAttribute("fullname");
 				String address = (String) request.getSession().getAttribute("address");
@@ -131,22 +144,23 @@ public class PlaceOrderServlet extends HttpServlet {
 					}
 					request.getSession().setAttribute("auth", auth);
 				}
-			} else {
-				request.getSession().setAttribute("first", true);
-				handleError(request, response, "Tài khoản của bạn chưa xác thực", "/sign-user");
-				return;
-			}
+			} 
+//			else {
+//				request.getSession().setAttribute("first", true);
+//				handleError(request, response, "Tài khoản của bạn chưa xác thực", "/sign-user");
+//				return;
+//			}
 			/* bắt lặp */
 
 			OrderDao orderDao = new OrderDao(DbCon.getConnection());
 			Order order = (Order) request.getSession().getAttribute("order");
 			order.setVerified(isVerifiedUser);
-			String inforBill = order.getUserId() + "-User:" + request.getSession().getAttribute("fullname")
-					+ "-Address:" + request.getSession().getAttribute("address") + "-Phone:"
-					+ request.getSession().getAttribute("phone") + "-ShipCost:" + order.getShipcost() + "-Total:"
-					+ order.getTotal();
+//			String inforBill = order.getUserId() + "-User:" + request.getSession().getAttribute("fullname")
+//					+ "-Address:" + request.getSession().getAttribute("address") + "-Phone:"
+//					+ request.getSession().getAttribute("phone") + "-ShipCost:" + order.getShipcost() + "-Total:"
+//					+ order.getTotal();
 			if ( isVerifiedUser && !isVerifiedOrder) {
-				order.setInfor_bill(inforBill);
+				//order.setInfor_bill(inforBill);
 				Long orderId = orderDao.insertOrder(order);
 				request.getSession().setAttribute("orderId", orderId);
 				if (orderId == 0) {
@@ -154,8 +168,27 @@ public class PlaceOrderServlet extends HttpServlet {
 					return;
 				}
 				order.setId(orderId);
+				//update inforBill - update DB order 
+				//String inforBill = SHA256Hashing.HashWithJavaMessageDigestWithSecret(order.getId())
+				String inforBill = SHA256Hashing.HashWithJavaMessageDigestWithSecret(orderId+order.getUserId()+"");
+				order.setInfor_bill(inforBill);
+				orderDao.updateInforBillOrder(orderId, inforBill);
 				request.getSession().setAttribute("order", order);
 				request.getSession().setAttribute("inforBill", inforBill);
+				
+				OrderDetailDao detailDao = new OrderDetailDao(DbCon.getConnection());
+				List<CartItem> products = (List<CartItem>) request.getSession().getAttribute("cart");
+				for (CartItem item : products) {
+					OrderDetail orderDetail = new OrderDetail();
+					orderDetail.setProductId(item.getProductId());
+					orderDetail.setOrderId(orderId);
+					orderDetail.setQuantity(item.getQuantity());
+					orderDetail.setTypeId(item.getTypeId());
+					Long detailId = detailDao.insertOrderDetail(orderDetail);
+					if (detailId == 0L) {
+						break;
+					}
+				}
 			}
 			
 
@@ -175,8 +208,12 @@ public class PlaceOrderServlet extends HttpServlet {
 					orderDetail.setOrderId(orderId);
 					orderDetail.setQuantity(item.getQuantity());
 					orderDetail.setTypeId(item.getTypeId());
-					Long detailId = detailDao.insertOrderDetail(orderDetail);
-					if (detailId == 0L) {
+//					Long detailId = detailDao.insertOrderDetail(orderDetail);
+//					if (detailId == 0L) {
+//						break;
+//					}
+					boolean updated = detailDao.updateQuantityByOrderDetail(orderDetail.getTypeId(), orderDetail.getQuantity()+0L);
+					if (!updated) {
 						break;
 					}
 				}
@@ -194,7 +231,8 @@ public class PlaceOrderServlet extends HttpServlet {
 				request.getSession().setAttribute("auth", auth);
 				request.getSession().setAttribute("orderId", orderId);
 			} else {
-				request.getSession().setAttribute("first", true);
+				//********* request.getSession().setAttribute("first", true);
+				request.getSession().setAttribute("first", false);
 				handleError(request, response, "Đơn hàng của bạn chưa xác thực", "/sign-order");
 				return;
 			}
@@ -203,6 +241,7 @@ public class PlaceOrderServlet extends HttpServlet {
 				RequestDispatcher rd = request.getRequestDispatcher("/order?id=" +orderId);
 				request.getSession().setAttribute("orderId", null);
 				rd.include(request, response);
+				return;
 			}
 			RequestDispatcher rd = request.getRequestDispatcher("/checkout");
 			rd.include(request, response);

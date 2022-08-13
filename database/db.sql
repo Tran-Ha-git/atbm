@@ -131,3 +131,40 @@ CREATE TABLE `key` (
   CONSTRAINT `fk_key_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+UPDATE `atbm`.`type` SET `quantity` = '222' WHERE (`id` = '1');
+UPDATE `atbm`.`type` SET `quantity` = '121' WHERE (`id` = '2');
+UPDATE `atbm`.`type` SET `quantity` = '121' WHERE (`id` = '3');
+UPDATE `atbm`.`type` SET `quantity` = '323' WHERE (`id` = '4');
+UPDATE `atbm`.`type` SET `quantity` = '121' WHERE (`id` = '5');
+UPDATE `atbm`.`type` SET `quantity` = '121' WHERE (`id` = '6');
+UPDATE `atbm`.`type` SET `quantity` = '232' WHERE (`id` = '7');
+UPDATE `atbm`.`type` SET `quantity` = '121' WHERE (`id` = '8');
+UPDATE `atbm`.`type` SET `quantity` = '663' WHERE (`id` = '13');
+UPDATE `atbm`.`type` SET `quantity` = '213' WHERE (`id` = '14');
+UPDATE `atbm`.`type` SET `quantity` = '32' WHERE (`id` = '15');
+UPDATE `atbm`.`type` SET `quantity` = '32' WHERE (`id` = '12');
+UPDATE `atbm`.`type` SET `quantity` = '32' WHERE (`id` = '11');
+UPDATE `atbm`.`type` SET `quantity` = '53' WHERE (`id` = '10');
+UPDATE `atbm`.`type` SET `quantity` = '32' WHERE (`id` = '16');
+UPDATE `atbm`.`type` SET `quantity` = '34' WHERE (`id` = '17');
+UPDATE `atbm`.`type` SET `quantity` = '43' WHERE (`id` = '25');
+UPDATE `atbm`.`type` SET `quantity` = '43' WHERE (`id` = '22');
+UPDATE `atbm`.`type` SET `quantity` = '43' WHERE (`id` = '23');
+UPDATE `atbm`.`type` SET `quantity` = '43' WHERE (`id` = '24');
+UPDATE `atbm`.`type` SET `quantity` = '25' WHERE (`id` = '29');
+UPDATE `atbm`.`type` SET `quantity` = '63' WHERE (`id` = '28');
+UPDATE `atbm`.`type` SET `quantity` = '36' WHERE (`id` = '27');
+UPDATE `atbm`.`type` SET `quantity` = '36' WHERE (`id` = '26');
+UPDATE `atbm`.`type` SET `quantity` = '36' WHERE (`id` = '30');
+UPDATE `atbm`.`type` SET `quantity` = '63' WHERE (`id` = '31');
+UPDATE `atbm`.`type` SET `quantity` = '36' WHERE (`id` = '32');
+UPDATE `atbm`.`type` SET `quantity` = '366' WHERE (`id` = '33');
+UPDATE `atbm`.`type` SET `quantity` = '63' WHERE (`id` = '18');
+UPDATE `atbm`.`type` SET `quantity` = '36' WHERE (`id` = '19');
+UPDATE `atbm`.`type` SET `quantity` = '636' WHERE (`id` = '20');
+UPDATE `atbm`.`type` SET `quantity` = '366' WHERE (`id` = '21');
+UPDATE `atbm`.`type` SET `quantity` = '636' WHERE (`id` = '9');
+
+INSERT INTO `atbm`.`key` (`id`, `status`, `public_key`, `user_id`) VALUES ('1', '1', 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgFGVfrY4jQSoZQWWygZ83roKXWD4YeT2x2p41dGkPixe73rT2IW04glagN2vgoZoHuOPqa5and6kAmK2ujmCHu6D1auJhE2tXP+yLkpSiYMQucDKmCsWMnW9XlC5K7OSL77TXXcfvTvyZcjObEz6LIBRzs6+FqpFbUO9SJEfh6wIDAQAB', '1');
+

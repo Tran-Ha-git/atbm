@@ -20,7 +20,7 @@ public class RSAKeyPairGenerator {
     
     public RSAKeyPairGenerator() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-        keyGen.initialize(1024);//or 2048
+        keyGen.initialize(1024);//or 2048 or 1024
         KeyPair pair = keyGen.generateKeyPair();
         this.privateKey = pair.getPrivate();
         this.publicKey = pair.getPublic();
