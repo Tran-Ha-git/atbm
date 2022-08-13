@@ -36,7 +36,8 @@ public class SignOrderServlet extends HttpServlet {
 
 			String inforBill = (String) request.getSession().getAttribute("inforBill");
 			request.setAttribute("inforBill", inforBill);
-			hasSign = false;
+			//******hasSign = false;
+			hasSign = true;
 			request.setAttribute("hasSign", hasSign);
 			RequestDispatcher rd = request.getRequestDispatcher("signature-order.jsp");
 			rd.include(request, response);
@@ -63,7 +64,8 @@ public class SignOrderServlet extends HttpServlet {
 			User auth = (User) request.getSession().getAttribute("auth");
 
 			if (isEmpty(signature)) {
-				hasSign = false;
+				//***********hasSign = false;
+				hasSign = true;
 			}
 			if (auth == null) {
 				response.sendRedirect("user-login");
@@ -76,7 +78,7 @@ public class SignOrderServlet extends HttpServlet {
 				return;
 			}
 			if ((!hasSign && (isEmpty(inforBill) || isEmpty(key)))
-					|| (hasSign && (isEmpty(inforBill) || isEmpty(signature)))) {
+					|| (hasSign && !first && (isEmpty(inforBill) || isEmpty(signature)))) {
 				hasSign = false;
 				error = "Thông tin đơn hàng hoặc private key không hợp lệ!";
 				request.setAttribute("hasSign", hasSign);
