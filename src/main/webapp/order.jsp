@@ -111,10 +111,10 @@
 												<img src="image/${detail.urlImg }" style="width: 45px; height: 45px" alt=""></a></td>
 											<td>${detail.name} 
 												<c:if test="${detail.priceKg !=null && detail.priceKg != '0đ/ 1kg'}">• ${detail.priceKg}</c:if></td>
-											<td style="width: 15%">${product.typeName}</td>
+											<td style="width: 15%">${detail.type}</td>
 											<td style="width: 15%"><fmt:formatNumber type = "number" maxFractionDigits = "3" value = "${detail.price}" /> ₫</td>
 											<td style="width: 15%; text-align: center;">x${detail.quantity}</td>
-											<td style="width: 15%"><fmt:formatNumber type = "number" maxFractionDigits = "3" value = "${product.price*detail.quantity}" /> ₫</td>
+											<td style="width: 15%"><fmt:formatNumber type = "number" maxFractionDigits = "3" value = "${detail.price*detail.quantity}" /> ₫</td>
 										</tr>
 									</c:forEach>
 								</c:when>

@@ -84,7 +84,6 @@ CREATE TABLE `order` (
 ) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-INSERT INTO `order` VALUES (21,1140000,0,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(22,740000,0,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(23,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(24,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(25,740000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(26,1080000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(27,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(28,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(29,177000,25000,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(30,552000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(31,552000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(32,552000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(33,552000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(34,552000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(35,552000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(36,177000,25000,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(37,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(38,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(39,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(40,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(41,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(42,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(43,740000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(44,740000,0,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(45,225000,25000,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(46,225000,25000,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(47,145000,25000,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(48,540000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(49,740000,0,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(50,400000,0,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(51,740000,0,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(52,540000,0,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(53,225000,25000,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(54,145000,25000,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(55,225000,25000,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(56,540000,0,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(57,175000,25000,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(58,225000,25000,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(59,450000,0,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao'),(60,125000,25000,NULL,1,_binary '\0','12-08-2022',NULL,NULL),(61,320000,0,NULL,1,_binary '\0','12-08-2022',NULL,'Đang giao');
 
 
 DROP TABLE IF EXISTS `order_detail`;
@@ -94,14 +93,15 @@ CREATE TABLE `order_detail` (
   `quantity` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `order_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
+  `type_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_order_detail_product1_idx` (`product_id`),
   KEY `fk_order_detail_order1_idx` (`order_id`),
   CONSTRAINT `fk_order_detail_order1` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`),
-  CONSTRAINT `fk_order_detail_product1` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
+  CONSTRAINT `fk_order_detail_product1` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
+  CONSTRAINT `fk_order_detail_type1` FOREIGN KEY (`type_id`) REFERENCES `type` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `order_detail` VALUES (7,'1',21,1),(8,'1',21,1),(9,'1',22,1),(10,'1',44,1),(11,'1',46,2),(12,'1',50,1),(13,'1',51,1),(14,'1',52,2),(15,'1',53,2),(16,'1',54,2),(17,'1',55,2),(18,'1',56,2),(19,'1',57,12),(20,'1',58,2),(21,'1',59,10),(22,'1',61,5);
 
 
 
