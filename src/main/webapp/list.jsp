@@ -102,6 +102,7 @@
                   <h5 >Danh mục sản phẩm </h5>
                   <div><span class="border-top border-4 ps-5 "></span></div>
                   <ul class="list-group">
+                       <li class="list-group-item"><a class="dropdown-item" href="list?group=${group}">Tất cả</a></li>
                   	<c:if test="${categories.size() > 0}">
                   		<c:forEach var = "category" items = "${categories}">
                   		<li class="list-group-item"><a class="dropdown-item" href="list?group=${group}&category=${category} ">${category}</a></li>
