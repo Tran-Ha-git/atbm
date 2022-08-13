@@ -27,7 +27,8 @@ public class OrderDetailDao {
 		Long generatedKey = 0l;
 
 		try {
-			query = "INSERT INTO `order_detail` (`quantity`, `order_id`, `product_id`, `type_id`)\r\n" + " VALUES (?, ?, ?, ?);";
+			query = "INSERT INTO `order_detail` (`quantity`, `order_id`, `product_id`, `type_id`)\r\n"
+					+ " VALUES (?, ?, ?, ?);";
 			pst = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			pst.setInt(1, orderDetail.getQuantity());
 			pst.setLong(2, orderDetail.getOrderId());
@@ -45,13 +46,7 @@ public class OrderDetailDao {
 					throw new SQLException("Creating user failed, no ID obtained.");
 				}
 			}
-			// cập nhật số lượng sp			
-			query = "UPDATE `type` t SET quantity = quantity - ? WHERE id = ?";
-			pst = this.con.prepareStatement(query);
-			pst.setLong(1, orderDetail.getQuantity());
-			pst.setLong(2, orderDetail.getTypeId());
-			pst.executeUpdate();
-			
+
 			System.out.println("Inserted record's ID: " + generatedKey);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,14 +54,30 @@ public class OrderDetailDao {
 		return generatedKey;
 	}
 
+	public boolean updateQuantityByOrderDetail(Long typeId, Long quantity) {
+		try {
+			query = "UPDATE `type` t SET quantity = quantity - ? WHERE id = ?";
+
+			// cập nhật số lượng sp
+			query = "UPDATE `type` t SET quantity = quantity - ? WHERE id = ?";
+			pst = this.con.prepareStatement(query);
+			pst.setLong(1, quantity);
+			pst.setLong(2, typeId);
+			pst.executeUpdate();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public List<OrderDetailDto> getOrderDetail(Long orderId) {
 		List<OrderDetailDto> results = new ArrayList<OrderDetailDto>();
 		try {
 			query = "select d.*, i.link, p.name, p.priceKg, t.price, t.name as type \r\n" + "from order_detail d \r\n"
 					+ "INNER JOIN product p ON p.id = d.product_id \r\n"
-					+ "INNER JOIN image i ON p.id = i.product_id\r\n"
-					+ "INNER JOIN type t ON d.type_id = t.id    \r\n" + "where order_id =?\r\n"
-					+ "GROUP BY d.id, p.id";
+					+ "INNER JOIN image i ON p.id = i.product_id\r\n" + "INNER JOIN type t ON d.type_id = t.id    \r\n"
+					+ "where order_id =?\r\n" + "GROUP BY d.id, p.id";
 			pst = this.con.prepareStatement(query);
 			pst.setLong(1, orderId);
 			rs = pst.executeQuery();

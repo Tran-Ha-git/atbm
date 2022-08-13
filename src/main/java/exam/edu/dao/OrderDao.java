@@ -28,13 +28,14 @@ public class OrderDao {
 
 		try {
 
-			query = "INSERT INTO `order` (`total`, `shipcost`, `user_id`, `date`)\r\n" + " VALUES (?, ?, ?, ?);";
+			query = "INSERT INTO `order` (`total`, `shipcost`, `user_id`, `date`, `status`)\r\n" + " VALUES (?, ?, ?, ?, ?);";
 			pst = this.con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			pst.setLong(1, order.getTotal());
 			pst.setLong(2, order.getShipcost());
 			pst.setLong(3, order.getUserId());
 			pst.setString(4, order.getDate());
-
+			pst.setString(5, order.getStatus());
+			
 			int affectedRows = pst.executeUpdate();
 
 			if (affectedRows == 0) {
@@ -118,6 +119,25 @@ public class OrderDao {
 			int rowsUpdated = pst.executeUpdate();
 			if (rowsUpdated > 0) {
 				System.out.println("An status order was updated successfully!");
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean updateInforBillOrder(Long orderId, String inforBill) {
+		try {
+			query = "UPDATE `order` SET infor_bill=? WHERE id=?";
+
+			pst = this.con.prepareStatement(query);
+			pst.setString(1, inforBill);
+			pst.setLong(2, orderId);
+
+			int rowsUpdated = pst.executeUpdate();
+			if (rowsUpdated > 0) {
+				System.out.println("An infor_bill order was updated successfully!");
 				return true;
 			}
 		} catch (Exception e) {

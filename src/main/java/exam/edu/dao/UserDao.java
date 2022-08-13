@@ -82,4 +82,21 @@ public class UserDao {
 		return user;
 	}
 
+	public String getPublicKey(Long userID) {
+		String publicKey = null;
+		try {
+			query = "select public_key from `key` where user_id = ? and status = 1";
+			pst = this.con.prepareStatement(query);
+			pst.setLong(1, userID);
+			rs = pst.executeQuery();
+
+			if (rs.next()) {
+				publicKey= rs.getString("public_key");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return publicKey;
+	}
+
 }

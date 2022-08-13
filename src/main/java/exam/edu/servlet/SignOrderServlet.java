@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import exam.edu.connection.DbCon;
+import exam.edu.dao.UserDao;
 import exam.edu.model.Order;
 import exam.edu.model.User;
 import exam.edu.utils.RSAUtil;
@@ -48,7 +50,7 @@ public class SignOrderServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
-			Boolean first = (boolean) request.getSession().getAttribute("first");
+			Boolean first = (boolean) (request.getSession().getAttribute("first")!=null?request.getSession().getAttribute("first"):false);
 			if (first != null && first == true) {
 				doGet(request, response);
 				return;
@@ -79,6 +81,7 @@ public class SignOrderServlet extends HttpServlet {
 				error = "Thông tin đơn hàng hoặc private key không hợp lệ!";
 				request.setAttribute("hasSign", hasSign);
 				request.setAttribute("error", error);
+				request.getSession().setAttribute("first", false);
 				RequestDispatcher rd = request.getRequestDispatcher("signature-order.jsp");
 				rd.forward(request, response);
 				return;
@@ -87,8 +90,9 @@ public class SignOrderServlet extends HttpServlet {
 			// create signature
 			if (!hasSign && signature == null) {
 				// hash infoBill
-				String content = inforBill + SHA256Hashing.getSecret();
-				String hashcode = SHA256Hashing.HashWithJavaMessageDigest(content);
+//				String content = inforBill + SHA256Hashing.getSecret();
+//				String hashcode = SHA256Hashing.HashWithJavaMessageDigest(content);
+				String hashcode = inforBill;
 				// encrypt the hashcode by private key
 				signature = Base64.getEncoder().encodeToString(RSAUtil.encryptByPrivateKey(hashcode, key));
 
@@ -98,6 +102,7 @@ public class SignOrderServlet extends HttpServlet {
 				request.getSession().setAttribute("isVerifiedOrder", false);
 				request.setAttribute("hasSign", hasSign);
 				request.setAttribute("inforBill", inforBill);
+				request.getSession().setAttribute("first", false);
 				RequestDispatcher rd = request.getRequestDispatcher("signature-order.jsp");
 				rd.include(request, response);
 				return;
@@ -106,23 +111,46 @@ public class SignOrderServlet extends HttpServlet {
 			// sign order
 			if (hasSign && !isEmpty(signature) && !isEmpty(inforBill)) {
 				// create hashcode
-				String hashcode1 = SHA256Hashing.HashWithJavaMessageDigestWithSecret(inforBill);
-
+				//String hashcode1 = SHA256Hashing.HashWithJavaMessageDigestWithSecret(inforBill);
+				String hashcode1= inforBill;
+				
 				// decrypt signature
-				String publicKey = auth.getPublicKey();
+				UserDao userDao = new UserDao(DbCon.getConnection());
+				String publicKey = userDao.getPublicKey(auth.getId());
+				//String publicKey = auth.getPublicKey();				
 				String hashcode2 = RSAUtil.decryptByPublicKey(signature, publicKey);
+				
+				if(hashcode2.equals("error")) {
+					hasSign = true;
+					error = "Thông tin đơn hàng hoặc chữ ký không hợp lệ!";
+					request.setAttribute("hasSign", hasSign);
+					request.setAttribute("error", error);
+					request.setAttribute("signature", signature);
+					request.setAttribute("inforBill", inforBill);
+					request.getSession().setAttribute("first", false);
+					RequestDispatcher rd = request.getRequestDispatcher("signature-order.jsp");
+					rd.forward(request, response);
+					return;
+				}
 
 				// compare
 				if (hashcode1.equals(hashcode2)) {
 					// move to place-order with isVerifiedOrder=true
 					request.getSession().setAttribute("isVerifiedOrder", true);
+					request.setAttribute("signature", null);
+					RequestDispatcher rd = request.getRequestDispatcher("/place-order");
+					rd.include(request, response);
+					return;
 				} else {
+					request.getSession().setAttribute("first", false);
 					request.getSession().setAttribute("isVerifiedOrder", false);
+					request.setAttribute("infoBill", inforBill);
+					request.setAttribute("hasSign", hasSign);
+					RequestDispatcher rd = request.getRequestDispatcher("signature-order.jsp");
+					rd.include(request, response);
+					return;
 				}
-				request.setAttribute("signature", null);
-				RequestDispatcher rd = request.getRequestDispatcher("/place-order");
-				rd.include(request, response);
-				return;
+				
 			}
 
 			request.setAttribute("infoBill", inforBill);
@@ -131,6 +159,7 @@ public class SignOrderServlet extends HttpServlet {
 			rd.include(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.sendRedirect("/home");
 		}
 	}
 

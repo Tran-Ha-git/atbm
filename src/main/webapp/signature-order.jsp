@@ -77,7 +77,8 @@
 									<label class="mb-2"><small>Signature</small> </label> 
 									<input type="text" name="sign-signature" class="form-control" placeholder="Signature" value="${signature }">
 								</div>
-		                  		<div class="text-center mt-4">
+		                  		<div class="text-center mt-4 float-end">
+		                  		<button type="button" class="btn btn-secondary" onclick="location.href='/cart'">Quay lại giỏ hàng</button>
 									<button type="submit" class="btn btn-primary">Ký xác nhận</button>
 								</div>
 		                  	</c:when>
