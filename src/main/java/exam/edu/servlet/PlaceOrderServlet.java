@@ -231,8 +231,9 @@ public class PlaceOrderServlet extends HttpServlet {
 				request.getSession().setAttribute("auth", auth);
 				request.getSession().setAttribute("orderId", orderId);
 			} else {
-				//********* request.getSession().setAttribute("first", true);
-				request.getSession().setAttribute("first", false);
+				//********* 
+				request.getSession().setAttribute("first", true);
+				//request.getSession().setAttribute("first", false);
 				handleError(request, response, "Đơn hàng của bạn chưa xác thực", "/sign-order");
 				return;
 			}
