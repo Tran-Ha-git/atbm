@@ -145,8 +145,8 @@ public class PlaceOrderServlet extends HttpServlet {
 					+ "-Address:" + request.getSession().getAttribute("address") + "-Phone:"
 					+ request.getSession().getAttribute("phone") + "-ShipCost:" + order.getShipcost() + "-Total:"
 					+ order.getTotal();
-			order.setInfor_bill(inforBill);
 			if ( isVerifiedUser && !isVerifiedOrder) {
+				order.setInfor_bill(inforBill);
 				Long orderId = orderDao.insertOrder(order);
 				request.getSession().setAttribute("orderId", orderId);
 				if (orderId == 0) {
@@ -174,11 +174,11 @@ public class PlaceOrderServlet extends HttpServlet {
 					orderDetail.setProductId(item.getProductId());
 					orderDetail.setOrderId(orderId);
 					orderDetail.setQuantity(item.getQuantity());
+					orderDetail.setTypeId(item.getTypeId());
 					Long detailId = detailDao.insertOrderDetail(orderDetail);
 					if (detailId == 0L) {
 						break;
 					}
-					// cập nhật số lượng sp
 				}
 //				request.getSession().setAttribute("cart", null);
 //				request.getSession().setAttribute("total", null);

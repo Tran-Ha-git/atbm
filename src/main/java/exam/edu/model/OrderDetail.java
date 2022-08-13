@@ -3,21 +3,31 @@ package exam.edu.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class OrderDetail implements Serializable{
+public class OrderDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Integer quantity;
 	private Long orderId;
 	private Long productId;
+	private Long typeId;
 
 	public OrderDetail() {
 	}
 
-	public OrderDetail(Long id, Integer quantity, Long orderId, Long productId) {
+	public OrderDetail(Long id, Integer quantity, Long orderId, Long productId, Long typeId) {
 		this.id = id;
 		this.quantity = quantity;
 		this.orderId = orderId;
 		this.productId = productId;
+		this.typeId = typeId;
+	}
+
+	public Long getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(Long typeId) {
+		this.typeId = typeId;
 	}
 
 	public Long getId() {
