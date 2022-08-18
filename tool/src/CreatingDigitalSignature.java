@@ -105,7 +105,7 @@ public class CreatingDigitalSignature extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 
-					String msg = textAreaHashCode.getText();
+					String msg = textHashCode.getText();
 					String strPriKey = textAreaPrivateKey.getText();
 
 					// Creating a Signature object
