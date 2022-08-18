@@ -22,108 +22,114 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
-public class CreatingDigitalSignature extends JFrame {
-	private JPanel contentPane;
-	private JLabel lblKey, lblalgorithm;
-	private JLabel lblHashCode;
-	private JTextArea textAreaHashCode,textAreaPrivateKey;
-	private JTextArea textAreaSignature;
-	private JLabel lblSignature;
-	private JButton btnEncrypt;
-	private SecretKey key;
-	private static String keyString;
-	private static byte[] ciphertext;
-	private static KeyPair keypair;
-	private static PublicKey publicKey;
-	private static PrivateKey privateKey;
+import exam.edu.utils.RSAUtil;
 
-	public CreatingDigitalSignature() {
-		ImageIcon imgicon = new ImageIcon("images/nlu_logo.gif");
+public class CreatingDigitalSignature extends JFrame {
+	private Image img = Toolkit.getDefaultToolkit().getImage("images/background.png");
+	private JLabel lblKey, lblHashCode, lblSignature;
+	private JPanel contentPane;
+	private JTextArea textAreaPrivateKey, textHashCode, textSignature;
+	private JButton button;
+
+	public CreatingDigitalSignature() throws IOException {
+
+		this.setContentPane(new JPanel() {
+			@Override
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.drawImage(img, 0, 0, this);
+			}
+		});
+		setLayout(null);
+		// Code View
+		ImageIcon imgicon = new ImageIcon("images/lock.png");
 		setIconImage(imgicon.getImage());
 		setBounds(100, 100, 909, 249);
-		this.contentPane = new JPanel();
-		this.contentPane.setBackground(SystemColor.control);
-		this.contentPane.setForeground(Color.WHITE);
-		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(this.contentPane);
-		this.contentPane.setLayout(null);
-		this.contentPane.setBackground(Color.pink);
 
 		this.lblKey = new JLabel("Private Key : ");
-		this.lblKey.setBounds(10, 11, 230, 14);
-		this.contentPane.add(this.lblKey);
+		this.lblKey.setBounds(30, 120, 230, 35);
+		lblKey.setForeground(Color.WHITE);
+		lblKey.setFont(new Font("Serif", Font.BOLD, 30));
+		this.add(lblKey);
 
 		this.textAreaPrivateKey = new JTextArea();
-//		this.textAreaPrivateKey.setBounds(100, 8, 350, 50);
-		JScrollPane scrollPane1 = new JScrollPane(textAreaPrivateKey, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		scrollPane1.setBounds(100, 8, 350, 70);
-//		this.contentPane.add(this.textAreaPrivateKey);
-		this.contentPane.add(scrollPane1);
-		
-		
+		this.textAreaPrivateKey.setBounds(200, 120, 350, 50);
+		this.textAreaPrivateKey.setForeground(Color.DARK_GRAY);
+		this.textAreaPrivateKey.setFont(new Font("Serif", Font.BOLD, 25));
 
-		this.lblHashCode = new JLabel("HashCode: ");
-		this.lblHashCode.setBounds(10, 85, 76, 14);
-		this.contentPane.add(this.lblHashCode);
+		this.lblHashCode = new JLabel("Hash Code : ");
+		this.lblHashCode.setBounds(30, 240, 230, 35);
+		lblHashCode.setForeground(Color.WHITE);
+		lblHashCode.setFont(new Font("Serif", Font.BOLD, 30));
+		this.add(lblHashCode);
 
-		this.textAreaHashCode = new JTextArea();
-		this.textAreaHashCode.setLineWrap(true);
-		this.textAreaHashCode.setBounds(10, 100, 200, 121);
-		this.contentPane.add(this.textAreaHashCode);
+		this.textHashCode = new JTextArea();
+		this.textHashCode.setBounds(200, 240, 350, 50);
+		this.textHashCode.setForeground(Color.DARK_GRAY);
+		this.textHashCode.setFont(new Font("Serif", Font.BOLD, 25));
 
-		this.textAreaSignature = new JTextArea();
-		this.textAreaSignature.setLineWrap(true);
-		this.textAreaSignature.setBounds(337, 100, 200, 121);
-		this.contentPane.add(this.textAreaSignature);
+		this.button = new JButton("GET SIGNATURE!");
+		this.button.setBounds(280, 300, 180, 30);
+		this.button.setForeground(Color.GRAY);
+		this.button.setFont(new Font("Serif", Font.BOLD, 15));
+		this.add(button);
 
-		this.lblSignature = new JLabel("Signature: ");
-		this.lblSignature.setBounds(337, 85, 150, 14);
-		this.contentPane.add(this.lblSignature);
-		
-		
+		this.lblSignature = new JLabel("Signature : ");
+		this.lblSignature.setBounds(30, 360, 230, 35);
+		lblSignature.setForeground(Color.WHITE);
+		lblSignature.setFont(new Font("Serif", Font.BOLD, 30));
+		this.add(lblSignature);
 
-		this.btnEncrypt = new JButton("Encrypt >>");
-		// btnEncrypt.setBackground(Color.yellow);
-		this.btnEncrypt.addActionListener(new ActionListener() {
+		this.textSignature = new JTextArea();
+		this.textSignature.setBounds(200, 360, 350, 50);
+		this.textSignature.setForeground(Color.DARK_GRAY);
+		this.textSignature.setFont(new Font("Serif", Font.BOLD, 25));
+
+		JScrollPane pane1 = new JScrollPane();
+		pane1.setViewportView(textAreaPrivateKey);
+		pane1.setBounds(200, 120, 350, 50);
+		this.add(pane1);
+
+		JScrollPane pane2 = new JScrollPane();
+		pane2.setViewportView(textHashCode);
+		pane2.setBounds(200, 240, 350, 50);
+		this.add(pane2);
+
+		JScrollPane pane3 = new JScrollPane();
+		pane3.setViewportView(textSignature);
+		pane3.setBounds(200, 360, 350, 50);
+		this.add(pane3);
+
+		//Xử lý sự kiện
+		this.button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+
 					String msg = textAreaHashCode.getText();
-					
-					PrivateKey privKey = getPrivateKey(textAreaPrivateKey.getText().toString());
+					String strPriKey = textAreaPrivateKey.getText();
+
 					// Creating a Signature object
-					Signature sign = Signature.getInstance("SHA256withRSA");
-					sign.initSign(privKey);
-					byte[] bytes = msg.getBytes();
+					String signature = Base64.getEncoder().encodeToString(RSAUtil.encryptByPrivateKey(msg, strPriKey));
 
-					// Adding data to the signature
-					sign.update(bytes);
+					textSignature.setText(signature);
 
-					// Calculating the signature
-					byte[] signature = sign.sign();
-					textAreaSignature.setText(Base64.getEncoder().encodeToString(signature));
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		this.btnEncrypt.setBounds(220, 130, 107, 23);
-		this.contentPane.add(this.btnEncrypt);
-
 	}
 
 	public static PrivateKey getPrivateKey(String base64PrivateKey) {
 		PrivateKey privateKey = null;
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64PrivateKey.getBytes()));
 		KeyFactory keyFactory = null;
-
 		try {
-			keyFactory = keyFactory.getInstance("RSA");
+			keyFactory = KeyFactory.getInstance("RSA");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-
 		try {
 			privateKey = keyFactory.generatePrivate(keySpec);
 		} catch (InvalidKeySpecException e) {
@@ -132,11 +138,11 @@ public class CreatingDigitalSignature extends JFrame {
 		return privateKey;
 	}
 
-	public static void main(String[] args) {
-		CreatingDigitalSignature jfAsym = new CreatingDigitalSignature();
-		jfAsym.setTitle("Creating Digital Signature");
-		jfAsym.setSize(600, 300);
-		jfAsym.setLocationRelativeTo(null);
-		jfAsym.setVisible(true);
+	public static void main(String[] args) throws Exception {
+		CreatingDigitalSignature jf = new CreatingDigitalSignature();
+		jf.setTitle("Creating Digital Signature");
+		jf.setDefaultCloseOperation(3);
+		jf.setSize(900, 562);
+		jf.setVisible(true);
 	}
 }

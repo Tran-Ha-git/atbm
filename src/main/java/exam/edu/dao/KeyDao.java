@@ -3,6 +3,8 @@ package exam.edu.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,16 +52,15 @@ public class KeyDao {
 			int rowsUpdated = pst.executeUpdate();
 			if (rowsUpdated > 0) {
 				System.out.println("An status key was updated successfully!");
-				if(status==1) {
+				if (status == 1) {
 					query = "UPDATE `key` SET status = 0 WHERE id !=?";
 					pst = this.con.prepareStatement(query);
 					pst.setLong(1, id);
 					pst.executeUpdate();
 				}
-				
+
 				return true;
 			}
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,14 +91,29 @@ public class KeyDao {
 		try {
 			query = "INSERT INTO `key` (public_key, status, user_id) VALUES (?, ?, ?)";
 
-			pst = this.con.prepareStatement(query);
+			pst = this.con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			pst.setString(1, key.getPublicKey());
-			pst.setInt(1, key.getStatus());
-			pst.setLong(1, key.getUserId());
+			pst.setInt(2, key.getStatus());
+			pst.setLong(3, key.getUserId());
 
 			int rowsUpdated = pst.executeUpdate();
 			if (rowsUpdated > 0) {
 				System.out.println("A key was inserted successfully!");
+				try (ResultSet generatedKeys = pst.getGeneratedKeys()) {
+					Long id = null;
+					if (generatedKeys.next()) {
+						id = generatedKeys.getLong(1);
+						if (id != null) {
+							query = "UPDATE `key` SET status = 0 WHERE id !=?";
+							pst = this.con.prepareStatement(query);
+							pst.setLong(1, id);
+							pst.executeUpdate();
+						}
+					} else {
+						throw new SQLException("Creating key failed, no ID obtained.");
+					}
+				}
+
 				return true;
 			}
 		} catch (Exception e) {

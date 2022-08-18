@@ -16,7 +16,6 @@ import exam.edu.dao.UserDao;
 import exam.edu.model.Order;
 import exam.edu.model.User;
 import exam.edu.utils.RSAUtil;
-import exam.edu.utils.SHA256Hashing;
 
 @WebServlet("/sign-order")
 public class SignOrderServlet extends HttpServlet {
@@ -36,7 +35,7 @@ public class SignOrderServlet extends HttpServlet {
 
 			String inforBill = (String) request.getSession().getAttribute("inforBill");
 			request.setAttribute("inforBill", inforBill);
-			//******hasSign = false;
+			// ******hasSign = false;
 			hasSign = true;
 			request.setAttribute("hasSign", hasSign);
 			RequestDispatcher rd = request.getRequestDispatcher("signature-order.jsp");
@@ -51,7 +50,9 @@ public class SignOrderServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
-			Boolean first = (boolean) (request.getSession().getAttribute("first")!=null?request.getSession().getAttribute("first"):false);
+			Boolean first = (boolean) (request.getSession().getAttribute("first") != null
+					? request.getSession().getAttribute("first")
+					: false);
 			if (first != null && first == true) {
 				doGet(request, response);
 				return;
@@ -64,7 +65,7 @@ public class SignOrderServlet extends HttpServlet {
 			User auth = (User) request.getSession().getAttribute("auth");
 
 			if (isEmpty(signature)) {
-				//***********hasSign = false;
+				// ***********hasSign = false;
 				hasSign = true;
 			}
 			if (auth == null) {
@@ -113,16 +114,17 @@ public class SignOrderServlet extends HttpServlet {
 			// sign order
 			if (hasSign && !isEmpty(signature) && !isEmpty(inforBill)) {
 				// create hashcode
-				//String hashcode1 = SHA256Hashing.HashWithJavaMessageDigestWithSecret(inforBill);
-				String hashcode1= inforBill;
-				
+				// String hashcode1 =
+				// SHA256Hashing.HashWithJavaMessageDigestWithSecret(inforBill);
+				String hashcode1 = inforBill;
+
 				// decrypt signature
 				UserDao userDao = new UserDao(DbCon.getConnection());
 				String publicKey = userDao.getPublicKey(auth.getId());
-				//String publicKey = auth.getPublicKey();				
+				// String publicKey = auth.getPublicKey();
 				String hashcode2 = RSAUtil.decryptByPublicKey(signature, publicKey);
-				
-				if(hashcode2.equals("error")) {
+
+				if (hashcode2.equals("error")) {
 					hasSign = true;
 					error = "Thông tin đơn hàng hoặc chữ ký không hợp lệ!";
 					request.setAttribute("hasSign", hasSign);
@@ -144,6 +146,8 @@ public class SignOrderServlet extends HttpServlet {
 					rd.include(request, response);
 					return;
 				} else {
+					error = "Thông tin đơn hàng hoặc chữ ký không hợp lệ!";
+					request.setAttribute("error", error);
 					request.getSession().setAttribute("first", false);
 					request.getSession().setAttribute("isVerifiedOrder", false);
 					request.setAttribute("infoBill", inforBill);
@@ -152,7 +156,7 @@ public class SignOrderServlet extends HttpServlet {
 					rd.include(request, response);
 					return;
 				}
-				
+
 			}
 
 			request.setAttribute("infoBill", inforBill);
