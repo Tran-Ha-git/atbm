@@ -18,8 +18,8 @@ import exam.edu.dao.KeyDao;
 import exam.edu.model.Key;
 import exam.edu.model.User;
 
-@WebServlet("/key")
-public class LoadKeyServlet extends HttpServlet {
+@WebServlet("/delete-key")
+public class DeleteKeyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -30,6 +30,8 @@ public class LoadKeyServlet extends HttpServlet {
 			String msgKey = null;
 			Boolean status = null;
 			List<Key> keys = new ArrayList<Key>();
+			
+			Long id = request.getParameter("id")!=null?Long.parseLong(request.getParameter("id")):null;
 
 			HttpSession session = request.getSession();
 			User auth = (User) session.getAttribute("auth");
@@ -40,8 +42,22 @@ public class LoadKeyServlet extends HttpServlet {
 			}
 			if (auth != null) {
 				KeyDao keyDao = new KeyDao(DbCon.getConnection());
-				keys = keyDao.getKeysByUserId(auth.getId());
+
+				if(id == null ) {
+					msgKey = "Xóa khóa không thành công.";
+					status= false;
+				}else {
+					boolean deleted =  keyDao.deleteById(id);
+					if(deleted) {
+						msgKey = "Xóa khóa thành công.";
+						status= true;
+					}else {
+						msgKey = "Xóa khóa không thành công.";
+						status= false;
+					}
+				}
 				
+				keys = keyDao.getKeysByUserId(auth.getId());
 			}
 			request.setAttribute("keys", keys);
 			request.setAttribute("msgKey", msgKey);

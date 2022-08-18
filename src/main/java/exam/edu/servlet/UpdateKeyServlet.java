@@ -18,8 +18,8 @@ import exam.edu.dao.KeyDao;
 import exam.edu.model.Key;
 import exam.edu.model.User;
 
-@WebServlet("/key")
-public class LoadKeyServlet extends HttpServlet {
+@WebServlet("/update-key")
+public class UpdateKeyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -30,6 +30,9 @@ public class LoadKeyServlet extends HttpServlet {
 			String msgKey = null;
 			Boolean status = null;
 			List<Key> keys = new ArrayList<Key>();
+			
+			Integer active = request.getParameter("status")!=null?Integer.parseInt(request.getParameter("status")):null;
+			Long id = request.getParameter("id")!=null?Long.parseLong(request.getParameter("id")):null;
 
 			HttpSession session = request.getSession();
 			User auth = (User) session.getAttribute("auth");
@@ -40,8 +43,22 @@ public class LoadKeyServlet extends HttpServlet {
 			}
 			if (auth != null) {
 				KeyDao keyDao = new KeyDao(DbCon.getConnection());
-				keys = keyDao.getKeysByUserId(auth.getId());
+
+				if(active ==null || id == null ) {
+					msgKey = "Cập nhật khóa không thành công.";
+					status= false;
+				}else {
+					boolean updated =  keyDao.updateStatus(id, active);
+					if(updated) {
+						msgKey = "Cập nhật khóa thành công.";
+						status= true;
+					}else {
+						msgKey = "Cập nhật khóa không thành công.";
+						status= false;
+					}
+				}
 				
+				keys = keyDao.getKeysByUserId(auth.getId());
 			}
 			request.setAttribute("keys", keys);
 			request.setAttribute("msgKey", msgKey);
