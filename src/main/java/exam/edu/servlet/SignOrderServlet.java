@@ -2,6 +2,8 @@ package exam.edu.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.PublicKey;
+import java.security.Signature;
 import java.util.Base64;
 
 import javax.servlet.RequestDispatcher;
@@ -25,6 +27,7 @@ public class SignOrderServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
 			Boolean first = (boolean) request.getSession().getAttribute("first");
@@ -110,21 +113,22 @@ public class SignOrderServlet extends HttpServlet {
 				return;
 			}
 
-			// sign order
+			// Verify chữ ký
 			if (hasSign && !isEmpty(signature) && !isEmpty(inforBill)) {
-				// create hashcode
-				//String hashcode1 = SHA256Hashing.HashWithJavaMessageDigestWithSecret(inforBill);
-				String hashcode1= inforBill;
-				
-				// decrypt signature
+				String hashcode= inforBill; // mã hash đơn hàng
+
 				UserDao userDao = new UserDao(DbCon.getConnection());
-				String publicKey = userDao.getPublicKey(auth.getId());
-				//String publicKey = auth.getPublicKey();				
-				String hashcode2 = RSAUtil.decryptByPublicKey(signature, publicKey);
-				
-				if(hashcode2.equals("error")) {
+				String publicKey64 = userDao.getPublicKey(auth.getId());
+				PublicKey publicKey = RSAUtil.getPublicKey(publicKey64);
+
+				byte[] sigToVerify; // chữ ký cần được verify
+				try {
+					sigToVerify = Base64.getDecoder().decode(signature);
+				}
+				// Bắt lỗi khi decode Base64 do chữ ký không hợp lệ
+				catch (IllegalArgumentException e){
 					hasSign = true;
-					error = "Thông tin đơn hàng hoặc chữ ký không hợp lệ!";
+					error = "Chữ ký không hợp lệ!";
 					request.setAttribute("hasSign", hasSign);
 					request.setAttribute("error", error);
 					request.setAttribute("signature", signature);
@@ -135,8 +139,28 @@ public class SignOrderServlet extends HttpServlet {
 					return;
 				}
 
-				// compare
-				if (hashcode1.equals(hashcode2)) {
+				// Đối tượng Signature
+				Signature sig = Signature.getInstance("SHA256withRSA"); // Chú ý algo phải giống tool tạo chữ ký
+				sig.initVerify(publicKey); // ở tool là initSign()
+				sig.update(hashcode.getBytes());
+
+				boolean result = sig.verify(sigToVerify);
+
+				if(!result) {
+					hasSign = true;
+					error = "Chữ ký không hợp lệ!";
+					request.setAttribute("hasSign", hasSign);
+					request.setAttribute("error", error);
+					request.setAttribute("signature", signature);
+					request.setAttribute("inforBill", inforBill);
+					request.getSession().setAttribute("first", false);
+					RequestDispatcher rd = request.getRequestDispatcher("signature-order.jsp");
+					rd.forward(request, response);
+					return;
+				}
+
+				// verify = true
+				if (result) {
 					// move to place-order with isVerifiedOrder=true
 					request.getSession().setAttribute("isVerifiedOrder", true);
 					request.setAttribute("signature", null);

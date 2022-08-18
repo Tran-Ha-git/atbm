@@ -53,7 +53,7 @@
 	<div class="container-fluid bg-light" style="min-height: 525px;">
 		<div class="container pb-4">
 			<h3 class="m-0 p-3 text-uppercase">Thanh toán</h3>
-			<form class="row" action="/place-order" method="get" accept-charset="UTF-8">
+			<form class="row" action="/place-order" method="post" accept-charset="UTF-8">
 				<div class="col-lg-6 col-sm-12 p-4">
 				 <c:choose>
 				      <c:when test="${msgStatus == false}"> 
