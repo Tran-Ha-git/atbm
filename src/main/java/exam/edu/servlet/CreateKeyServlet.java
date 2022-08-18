@@ -2,10 +2,10 @@ package exam.edu.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,23 +13,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import exam.edu.connection.DbCon;
-import exam.edu.dao.KeyDao;
-import exam.edu.model.Key;
-import exam.edu.model.User;
+import com.google.gson.Gson;
 
-@WebServlet("/key")
-public class LoadKeyServlet extends HttpServlet {
+import exam.edu.model.User;
+import exam.edu.utils.RSAKeyPairGenerator;
+
+@WebServlet("/create-key")
+public class CreateKeyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
-			String msg = null;
-			String msgKey = null;
-			Boolean status = null;
-			List<Key> keys = new ArrayList<Key>();
 
 			HttpSession session = request.getSession();
 			User auth = (User) session.getAttribute("auth");
@@ -39,16 +35,20 @@ public class LoadKeyServlet extends HttpServlet {
 				return;
 			}
 			if (auth != null) {
-				KeyDao keyDao = new KeyDao(DbCon.getConnection());
-				keys = keyDao.getKeysByUserId(auth.getId());
-				
+				RSAKeyPairGenerator generator = new RSAKeyPairGenerator();
+				Base64.getEncoder().encodeToString(generator.getPublicKey().getEncoded());
+				Base64.getEncoder().encodeToString(generator.getPrivateKey().getEncoded());
+
+				Map<String, String> options = new LinkedHashMap<>();
+				options.put("private", Base64.getEncoder().encodeToString(generator.getPrivateKey().getEncoded()));
+				options.put("public",Base64.getEncoder().encodeToString(generator.getPublicKey().getEncoded()));
+				String json = new Gson().toJson(options);
+
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(json);
 			}
-			request.setAttribute("keys", keys);
-			request.setAttribute("msgKey", msgKey);
-			request.setAttribute("status", status);
-			request.setAttribute("msg", msg);
-			RequestDispatcher rd = request.getRequestDispatcher("key.jsp");
-			rd.include(request, response);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
