@@ -11,7 +11,7 @@
 			</a>
 
 			<ul
-				class="nav col-lg-6 col-sm-12 col-xs-12 col-md-auto mb-2 justify-content-center mb-md-0 m-auto">
+				class="nav col-lg-5 col-sm-12 col-xs-12 col-md-auto mb-2 justify-content-center mb-md-0 m-auto">
 				<li><a href="/home" class="nav-link px-2 link-light">Trang
 						chủ</a></li>
 				<li><a href="list?group=tea" class="nav-link px-2 link-light">Sản phẩm
@@ -28,9 +28,9 @@
 				</button>
 			</form>
 
-			<div class="col-lg-3 col-sm-6 col-xs-6 text-end">
+			<div class="col-lg-4 col-sm-6 col-xs-6 text-end">
 				<a	href="/cart"
-					class="nav-link waves-effect text-white position-relative d-inline pe-0 me-5"
+					class="nav-link waves-effect text-white position-relative d-inline pe-0 me-2"
 					title="Giỏ hàng"> 
 						
 					<c:if test="${cart !=null && cart.size() > 0}">
@@ -40,6 +40,12 @@
 					</c:if>
 						 
 					 <i class="fas fa-shopping-cart"
+					style="font-size: 20px; vertical-align: middle;"></i>
+				</a>
+				<a	href="/ToolSignature/ToolSignature.jar" download
+					class="nav-link waves-effect text-white position-relative d-inline pe-0 me-3"
+					title="Tải tool"> 						 
+					 <i class="fa-solid fa-download"
 					style="font-size: 20px; vertical-align: middle;"></i>
 				</a>
 				
