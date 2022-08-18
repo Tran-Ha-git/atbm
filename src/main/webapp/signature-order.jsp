@@ -5,7 +5,7 @@
 <html>
 <head>
 <%@include file="includes/head.jsp"%>
-<title>Đăng nhập</title>
+<title>Ký đơn hàng</title>
 <style>
 .header {
 	font-size: 14px;
@@ -68,13 +68,14 @@
 						</c:if>
 						<div class="form-group mt-2 mb-2">
 							<label class="mb-2"><small>Thông tin đơn hàng</small> </label> 
-							<input type="text" name="sign-order" class="form-control" placeholder="Thông tin đơn hàng"  value="${inforBill }">
+							<input type="text" name="sign-order" class="form-control" placeholder="Mã hash đơn hàng"  value="${inforBill }">
 						</div>
 
 						<c:choose>
 		                  	<c:when test="${hasSign == true}"> 
 		                  		<div class="form-group mt-4 mb-2">
-									<label class="mb-2"><small>Signature</small> </label> 
+									<label class="mb-2"><small>Chữ ký</small> </label>
+									<label class="mb-2" style="color: red">(Để tạo chữ ký, quý khách sử dụng tool của cửa hàng cung cấp)</label>
 									<input type="text" name="sign-signature" class="form-control" placeholder="Signature" value="${signature }">
 								</div>
 		                  		<div class="text-center mt-4 float-end">
