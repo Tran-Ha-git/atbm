@@ -68,7 +68,7 @@
 						</c:if>
 						<div class="form-group mt-2 mb-2">
 							<label class="mb-2"><small>Thông tin đơn hàng</small> </label> 
-							<input type="text" name="sign-order" class="form-control" placeholder="Mã hash đơn hàng"  value="${inforBill }">
+							<input type="text" name="sign-order" class="form-control" placeholder="Mã hash đơn hàng"  value="${inforBill}" readonly>
 						</div>
 
 						<c:choose>
