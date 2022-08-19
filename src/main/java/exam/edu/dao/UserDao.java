@@ -1,5 +1,8 @@
 package exam.edu.dao;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +25,13 @@ public class UserDao {
 			query = "select * from user where username = ? and password = ? and status = 1";
 			pst = this.con.prepareStatement(query);
 			pst.setString(1, username);
-			pst.setString(2, password);
+
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] hashValue = md.digest(password.getBytes(StandardCharsets.UTF_8));
+			BigInteger number = new BigInteger(1, hashValue); // binary
+			String hashText = number.toString(16); // hexadecimal
+
+			pst.setString(2, hashText);
 			rs = pst.executeQuery();
 
 			if (rs.next()) {
