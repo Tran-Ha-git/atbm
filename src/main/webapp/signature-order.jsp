@@ -68,8 +68,10 @@
 						</c:if>
 						<div class="form-group mt-2 mb-2">
 							<label class="mb-2"><small>Mã hash đơn hàng</small> </label>
-							<input type="text" name="sign-order" class="form-control" placeholder="Mã hash đơn hàng"  value="${inforBill}" readonly>
+							<input type="text" name="sign-order" id="sign-order" class="form-control" placeholder="Mã hash đơn hàng"  value="${inforBill}" readonly>
 						</div>
+
+						<input class="btn btn-success" onclick="copy()" value="Sao chép" readonly>
 
 						<c:choose>
 		                  	<c:when test="${hasSign == true}"> 
@@ -102,5 +104,13 @@
 
 	<%@include file="includes/footer.jsp"%>
 	<%@include file="includes/scripts.jsp"%>
+<script>
+	function copy() {
+		var copyText = document.getElementById("sign-order");
+		copyText.select();
+		copyText.setSelectionRange(0, 99999); /* For mobile devices */
+		navigator.clipboard.writeText(copyText.value);
+	}
+</script>
 </body>
 </html>
