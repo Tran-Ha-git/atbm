@@ -26,6 +26,7 @@
         }
         .item-cart .card img{
             height: 250px;
+			object-fit: cover;
         }
         .item-cart:hover{
             transform: scale(1) translateZ(0) translateY(0) !important;
