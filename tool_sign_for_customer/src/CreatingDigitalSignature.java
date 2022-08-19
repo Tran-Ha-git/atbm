@@ -52,7 +52,7 @@ public class CreatingDigitalSignature extends JFrame {
 
 		this.textAreaPrivateKey = new JTextArea();
 		this.textAreaPrivateKey.setBounds(200, 120, 350, 50);
-		this.textAreaPrivateKey.setForeground(Color.DARK_GRAY);
+		this.textAreaPrivateKey.setForeground(Color.BLUE);
 		this.textAreaPrivateKey.setFont(new Font("Serif", Font.BOLD, 25));
 
 		this.lblHashCode = new JLabel("Hash Code : ");
@@ -63,12 +63,12 @@ public class CreatingDigitalSignature extends JFrame {
 
 		this.textHashCode = new JTextArea();
 		this.textHashCode.setBounds(200, 240, 350, 50);
-		this.textHashCode.setForeground(Color.DARK_GRAY);
+		this.textHashCode.setForeground(Color.BLUE);
 		this.textHashCode.setFont(new Font("Serif", Font.BOLD, 25));
 
 		this.button = new JButton("GET SIGNATURE!");
 		this.button.setBounds(280, 300, 180, 30);
-		this.button.setForeground(Color.GRAY);
+		this.button.setForeground(Color.BLUE);
 		this.button.setFont(new Font("Serif", Font.BOLD, 15));
 		this.add(button);
 
@@ -80,7 +80,7 @@ public class CreatingDigitalSignature extends JFrame {
 
 		this.textSignature = new JTextArea();
 		this.textSignature.setBounds(200, 360, 350, 50);
-		this.textSignature.setForeground(Color.DARK_GRAY);
+		this.textSignature.setForeground(Color.BLUE);
 		this.textSignature.setFont(new Font("Serif", Font.BOLD, 25));
 
 		JScrollPane pane1 = new JScrollPane();
