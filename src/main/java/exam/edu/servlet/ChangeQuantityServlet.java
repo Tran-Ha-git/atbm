@@ -50,7 +50,7 @@ public class ChangeQuantityServlet extends HttpServlet {
 							if(max!=null && max >= (quantity+1)) {
 								item.setQuantity(item.getQuantity()+1);
 								session.setAttribute("cart", sessionCart);
-								msgQuantity = "Đã giảm sản phẩm thành công!";
+								msgQuantity = "Đã thêm sản phẩm thành công!";
 								status = true;
 								existed = true;
 							}else {
@@ -62,7 +62,7 @@ public class ChangeQuantityServlet extends HttpServlet {
 							if(action.equals("dec") && item.getQuantity() > 1) {
 								item.setQuantity(item.getQuantity()-1);
 								session.setAttribute("cart", sessionCart);
-								msgQuantity = "Đã thêm sản phẩm thành công!";
+								msgQuantity = "Đã giảm sản phẩm thành công!";
 								status = true;
 								existed = true;
 							} else {
