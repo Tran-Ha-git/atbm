@@ -42,7 +42,7 @@
 					 <i class="fas fa-shopping-cart"
 					style="font-size: 20px; vertical-align: middle;"></i>
 				</a>
-				<a	href="/ToolSignature/ToolSignature.jar" download
+				<a	href="\tool\signature.zip" download
 					class="nav-link waves-effect text-white position-relative d-inline pe-0 me-3"
 					title="Tải tool"> 						 
 					 <i class="fa-solid fa-download"

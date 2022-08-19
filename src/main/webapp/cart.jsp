@@ -125,7 +125,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 											<td style="width: 5%"> <button class="border rounded-circle"><i class="fa-solid fa-x" onclick="location.href=`/remove-from-cart?productId=${product.productId}&typeId=${product.typeId}`"></i></button> </td>
 											<td style="width: 10%">
 												<a href="/product?id=${product.productId }">
-													<img src="image/${product.urlImg}"  style="width: 45px; height: 45px" alt="">
+													<img src="image/${product.urlImg}"  style="width: 45px; height: 45px;object-fit: cover;" alt="">
 												</a>
 											</td>
 											<td style="width: 30%">${product.name} 

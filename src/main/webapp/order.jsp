@@ -108,7 +108,7 @@
 									<c:forEach var="detail" items="${details}">
 										<tr>
 											<td style="width: 10%"><a href="/product?id=${detail.productId }">
-												<img src="image/${detail.urlImg }" style="width: 45px; height: 45px" alt=""></a></td>
+												<img src="image/${detail.urlImg }" style="width: 45px; height: 45px;object-fit: cover;" alt=""></a></td>
 											<td>${detail.name} 
 												<c:if test="${detail.priceKg !=null && detail.priceKg != '0đ/ 1kg'}">• ${detail.priceKg}</c:if></td>
 											<td style="width: 15%">${detail.type}</td>
