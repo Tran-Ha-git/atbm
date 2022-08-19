@@ -87,19 +87,27 @@
 									<div>
 										<button type="button" class="btn btn-primary" id="createKey">Tạo khóa</button>
 									</div>
-									<div class="input-group flex-nowrap mt-2">
-										<span class="input-group-text " id="addon-wrapping" >Public key</span> 
-										<input id="contentKey" type="text" class="form-control" aria-describedby="addon-wrapping">
-									</div>
-									<div class="input-group flex-nowrap mt-2">
-										<span class="input-group-text " id="addon-wrapping2" >Private key</span> 
-										<input id="hiddenKey" type="text" class="form-control" aria-describedby="addon-wrapping2">
-									</div>
+									<form id="saveForm" action="save-key" method="post">
+										<div class="input-group flex-nowrap mt-2">
+											<span class="input-group-text " id="addon-wrapping" >Public key</span>
+											<input id="contentKey" name="contentKey" type="text" class="form-control" aria-describedby="addon-wrapping" readonly>
+										</div>
+										<input class="btn btn-success" onclick="copyPublicKey()" value="Sao chép" readonly>
+										<br> <br>
+										<label class="mb-2" style="color: red; font-weight: bold">Quý khách cần lưu lại và bảo mật Private Key</label>
+										<div class="input-group flex-nowrap mt-2">
+											<span class="input-group-text " id="addon-wrapping2" >Private key</span>
+											<input id="hiddenKey" type="text" class="form-control" aria-describedby="addon-wrapping2" readonly>
+										</div>
+
+										<input class="btn btn-success" onclick="copyPrivateKey()" value="Sao chép" readonly>
+
+									</form>
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
 										id="closeModal">Hủy</button>
-									<button type="button" class="btn btn-primary">Lưu khóa</button>
+									<button type="button" class="btn btn-primary" id="btnSaveKey">Lưu khóa</button>
 								</div>
 							</div>
 						</div>
@@ -204,15 +212,34 @@
 			$.get("/create-key", function(responseText) {
 				$.each(responseText, function(index, item) { 
 					if(index=="public"){
-						$("#contentKey").val(JSON.stringify(item));
+						$("#contentKey").val(JSON.stringify(item).replaceAll("\"",""));
 					}
 					if(index=="private"){
-						$("#hiddenKey").val(JSON.stringify(item));
+						$("#hiddenKey").val(JSON.stringify(item).replaceAll("\"",""));
 					}
 		        });
 			});
 		});
-		
+
+		$(document).on("click", "#btnSaveKey", function() {
+			if(document.getElementById("contentKey").value.length == 0){
+				return;
+			}
+			document.getElementById("saveForm").submit();
+		});
+
+		function copyPublicKey() {
+			var copyText = document.getElementById("contentKey");
+			copyText.select();
+			copyText.setSelectionRange(0, 99999); /* For mobile devices */
+			navigator.clipboard.writeText(copyText.value);
+		}
+		function copyPrivateKey() {
+			var copyText = document.getElementById("hiddenKey");
+			copyText.select();
+			copyText.setSelectionRange(0, 99999); /* For mobile devices */
+			navigator.clipboard.writeText(copyText.value);
+		}
 	</script>
 </body>
 </html>

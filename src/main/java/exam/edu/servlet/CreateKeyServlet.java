@@ -36,8 +36,6 @@ public class CreateKeyServlet extends HttpServlet {
 			}
 			if (auth != null) {
 				RSAKeyPairGenerator generator = new RSAKeyPairGenerator();
-				Base64.getEncoder().encodeToString(generator.getPublicKey().getEncoded());
-				Base64.getEncoder().encodeToString(generator.getPrivateKey().getEncoded());
 
 				Map<String, String> options = new LinkedHashMap<>();
 				options.put("private", Base64.getEncoder().encodeToString(generator.getPrivateKey().getEncoded()));
