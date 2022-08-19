@@ -108,7 +108,7 @@
 				<table class="table table-responsive align-middle">
 					<thead>
 					<tr>
-						<th colspan="3" ">SẢN PHẨM</th>
+						<th colspan="3">SẢN PHẨM</th>
 						<th >LOẠI</th>
 						<th >GIÁ</th>
 						<th style=" font-size: 15px;">SỐ LƯỢNG</th>
